@@ -1,44 +1,33 @@
-name: Flutter Android APK Build
+name: Build APK
 
 on:
   push:
     branches:
-      - main
+      - '**'
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build APK
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Clonar repositorio
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # 2️⃣ Configurar Java (necesario para Android)
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      # 3️⃣ Instalar Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.41.0'
-          channel: 'stable'
+          channel: stable
 
-      # 4️⃣ Instalar dependencias
-      - name: Install dependencies
+      - name: Flutter Doctor
+        run: flutter doctor
+
+      - name: Get dependencies
         run: flutter pub get
 
-      # 5️⃣ Compilar APK release
       - name: Build APK
         run: flutter build apk --release
 
-      # 6️⃣ Subir APK como artefacto
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
